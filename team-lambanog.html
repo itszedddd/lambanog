@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Team Lambanog Members</title>
+<!-- Fancy fonts from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  /* Reset and base */
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f9f5f2;
+    font-family: 'Poppins', sans-serif;
+    color: #403b36;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    margin: 2rem 1rem 0.5rem;
+  }
+  header h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 4rem;
+    margin: 0;
+    color: #a66431;
+    text-shadow: 1px 1px 2px #6e4b24;
+  }
+  header p {
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+    color: #7a6a59;
+  }
+  main {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgb(166 100 49 / 0.3);
+    padding: 2rem 3rem 3rem;
+    max-width: 720px;
+    width: 90vw;
+  }
+  h2 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #925b1b;
+    text-align: center;
+  }
+  /* Members list container */
+  #members-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  /* Member card */
+  .member-card {
+    background: #fcf6e8;
+    border-radius: 18px;
+    box-shadow: 1px 2px 8px rgb(166 100 49 / 0.25);
+    padding: 1rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  /* Remove button on top right */
+  .remove-btn {
+    background: #d94f4f;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 28px;
+    height: 28px;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .remove-btn:hover {
+    background: #b13636;
+  }
+  /* Member image */
+  .member-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #cbb07e;
+    background: #fff6db url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cat_silhouette.svg/120px-Cat_silhouette.svg.png') no-repeat center/contain;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+  }
+  .member-image.placeholder {
+    border: 3px solid #d2b45b;
+    background-size: contain !important;
+  }
+  /* Hidden file input */
+  .hidden-file-input {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+  /* Editable member name */
+  .member-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    margin: 0 0 0.5rem;
+    color: #a66431;
+    cursor: text;
+    width: 100%;
+    text-align: center;
+    user-select: text;
+  }
+  .member-name[contenteditable="true"]:focus {
+    outline: 2px solid #c58c3f;
+    background: #fff8e1;
+  }
+  /* Editable details */
+  .member-details {
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #5a4c3b;
+    background-color: #faf3dd;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    min-height: 55px;
+    resize: vertical;
+    border: 1.3px solid transparent;
+    cursor: text;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 0.5rem;
+  }
+  .member-details[contenteditable="true"]:focus {
+    border-color: #c58c3f;
+    background: #fff8e1;
+    outline: none;
+  }
+  /* Birthday, Age, Zodiac editable */
+  .editable-birthday, .editable-age, .editable-zodiac {
+    border-radius: 8px;
+    background-color: #fcf2c7;
+    padding: 4px 8px;
+    margin: 0 5px 0.5rem 0;
+    min-width: 50px;
+    text-align: center;
+    cursor: text;
+    width: calc(33% - 10px);
+    user-select: text;
+  }
+  .editable-birthday:focus, .editable-age:focus, .editable-zodiac:focus {
+    outline: 2px solid #c58c3f;
+    background-color: #fff8e1;
+  }
+  .extra-info-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  /* Social media links container */
+  .social-links {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  .social-links a {
+    margin: 0 6px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #a67425;
+    font-size: 1.15rem;
+  }
+  .social-links a:hover {
+    color: #925b1b;
+  }
+  /* Add member form */
+  #add-member-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1rem;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 0;
+    max-width: 720px;
+    width: 90vw;
+  }
+  #add-member-form input,
+  #add-member-form textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    border: 2px solid #a67425;
+    border-radius: 10px;
+    padding: 0.45rem 0.75rem;
+    color: #403b36;
+    transition: border-color 0.3s ease;
+  }
+  #add-member-form input:focus,
+  #add-member-form textarea:focus {
+    border-color: #925b1b;
+    outline: none;
+  }
+  #new-member-name {
+    flex: 1 1 180px;
+    min-width: 180px;
+  }
+  /* Image label styled as avatar for click */
+  #add-member-image-label {
+    flex: 1 1 120px;
+    min-width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #cbb07e;
+    background: #fff6db url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cat_silhouette.svg/120px-Cat_silhouette.svg.png') no-repeat center/contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a67425;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  #add-member-image-label:hover {
+    border-color: #925b1b;
+    color: #925b1b;
+  }
+  #new-member-image {
+    display: none;
+  }
+  #new-member-birthday,
+  #new-member-age,
+  #new-member-zodiac,
+  #new-member-facebook,
+  #new-member-twitter,
+  #new-member-instagram {
+    flex: 1 1 100px;
+    min-width: 100px;
+  }
+  #new-member-details {
+    flex: 1 1 100%;
+    min-width: 260px;
+    height: 70px;
+    resize: vertical;
+  }
+  #add-member-btn {
+    background-color: #a67425;
+    color: white;
+    border: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.55rem 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1 1 120px;
+    min-width: 120px;
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+    height: 46px;
+  }
+  #add-member-btn:hover {
+    background-color: #925b1b;
+  }
+  /* Instruction text */
+  #edit-instructions {
+    font-size: 0.9rem;
+    color: #a67a3f;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+  footer {
+    margin: 2rem 1rem 2rem;
+    color: #baa97a;
+    font-size: 0.9rem;
+    font-style: italic;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Team Lambanog</h1>
+  <p>Sharing kakupalan together</p>
+</header>
+
+<main>
+  <h2>Members</h2>
+  <div id="edit-instructions">Practice gumawa ng website.</div>
+  <ul id="members-list" aria-label="List of Team Lambanog members" role="list">
+    <!-- Members inserted by JavaScript -->
+  </ul>
+
+  <form id="add-member-form" aria-label="Add a new member" onsubmit="return false;">
+    <input type="text" id="new-member-name" placeholder="Name" aria-label="New member name" required />
+    <label id="add-member-image-label" for="new-member-image" title="Click to upload photo">Upload Image</label>
+    <input type="file" id="new-member-image" accept="image/*" aria-label="Upload new member image file" />
+    <input type="date" id="new-member-birthday" placeholder="Birthday" aria-label="New member birthday" />
+    <input type="number" id="new-member-age" min="0" max="150" placeholder="Age" aria-label="New member age" />
+    <input type="text" id="new-member-zodiac" placeholder="Zodiac" aria-label="New member zodiac" maxlength="20" />
+    <input type="url" id="new-member-facebook" placeholder="Facebook URL" aria-label="Facebook URL" />
+    <input type="url" id="new-member-twitter" placeholder="Twitter URL" aria-label="Twitter URL" />
+    <input type="url" id="new-member-instagram" placeholder="Instagram URL" aria-label="Instagram URL" />
+    <textarea id="new-member-details" placeholder="Details (optional)" aria-label="New member details"></textarea>
+    <button id="add-member-btn" aria-label="Add new member">Add Member</button>
+  </form>
+</main>
+
+<footer>
+  Made by Team Lambanog
+</footer>
+
+<script>
+  const membersListEl = document.getElementById('members-list');
+  const addMemberForm = document.getElementById('add-member-form');
+  const newNameInput = document.getElementById('new-member-name');
+  const newImageInput = document.getElementById('new-member-image');
+  const newDetailsInput = document.getElementById('new-member-details');
+  const newBirthdayInput = document.getElementById('new-member-birthday');
+  const newAgeInput = document.getElementById('new-member-age');
+  const newZodiacInput = document.getElementById('new-member-zodiac');
+  const newFacebookInput = document.getElementById('new-member-facebook');
+  const newTwitterInput = document.getElementById('new-member-twitter');
+  const newInstagramInput = document.getElementById('new-member-instagram');
+  const addMemberImageLabel = document.getElementById('add-member-image-label');
+
+  // Initial data with one sample member to follow
+  const initialMembers = [
+    {
+      name: 'John Luiz "Wiz" Bangsoy',
+      image: "Luiz.jpg.jpg",
+      details: "Mag t-3rd year ba ko?",
+      birthday: "2005-01-14",
+      age: "20",
+      zodiac: "Capricorn",
+      social: {
+        facebook: "https://www.facebook.com/john.luiz.v.bangsoy.14",
+        twitter: "",
+        instagram: "https://www.instagram.com/lushi.uix/"
+      }
+    },
+  
+    {
+      name: 'Johnloyd "long" Tumalom',
+      image: "long.jpg",
+      details: "ang init ",
+      birthday: "2004-12-18",
+      age: "20",
+      zodiac: "Sagittarius",
+      social: {
+        facebook: "https://www.facebook.com/Johnloydtumalom12",
+        twitter: "",
+        instagram: "https://www.instagram.com/johnloydtumalom/"
+      }
+    
+
+    }
+  ];
+
+  // Helper: fallback image URL if none or broken
+  const placeholderImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cat_silhouette.svg/120px-Cat_silhouette.svg.png';
+
+  // Create a member card element from member data
+  function createMemberCard(memberData) {
+    const li = document.createElement('li');
+    li.className = 'member-card';
+
+    // Remove button 
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.setAttribute('aria-label', `Remove member ${memberData.name}`);
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      membersListEl.removeChild(li);
+    });
+    li.appendChild(removeBtn);
+
+    // Member image
+    const img = document.createElement('img');
+    img.className = 'member-image';
+    img.src = memberData.image && memberData.image.trim() ? memberData.image.trim() : placeholderImage;
+    img.alt = `Picture of ${memberData.name}`;
+    img.title = "Click to change picture";
+    img.onerror = () => {
+      img.src = placeholderImage;
+      img.classList.add('placeholder');
+    };
+    li.appendChild(img);
+
+    // Hidden file input for image upload
+    const imageFileInput = document.createElement('input');
+    imageFileInput.type = 'file';
+    imageFileInput.accept = 'image/*';
+    imageFileInput.className = 'hidden-file-input';
+    imageFileInput.setAttribute('aria-label', `Upload image file for ${memberData.name}`);
+    li.appendChild(imageFileInput);
+
+    img.addEventListener('click', () => {
+      imageFileInput.click();
+    });
+
+    imageFileInput.addEventListener('change', () => {
+      if (imageFileInput.files && imageFileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          img.src = evt.target.result;
+          img.classList.remove('placeholder');
+        };
+        reader.readAsDataURL(imageFileInput.files[0]);
+      }
+    });
+
+    // Editable text helper
+    function createEditableDiv(className, text, ariaLabel) {
+      const d = document.createElement('div');
+      d.className = className;
+      d.contentEditable = 'true';
+      d.spellcheck = false;
+      d.textContent = text || '';
+      d.setAttribute('aria-label', ariaLabel);
+      d.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          d.blur();
+        }
+      });
+      return d;
+    }
+
+    const nameEl = createEditableDiv('member-name', memberData.name, `Edit name of member ${memberData.name}`);
+    const detailsEl = createEditableDiv('member-details', memberData.details, `Edit details of member ${memberData.name}`);
+    const birthdayEl = createEditableDiv('editable-birthday', memberData.birthday, `Edit birthday of member ${memberData.name}`);
+    const ageEl = createEditableDiv('editable-age', memberData.age, `Edit age of member ${memberData.name}`);
+    const zodiacEl = createEditableDiv('editable-zodiac', memberData.zodiac, `Edit zodiac of member ${memberData.name}`);
+
+    li.appendChild(nameEl);
+    li.appendChild(detailsEl);
+
+    const extraInfoContainer = document.createElement('div');
+    extraInfoContainer.className = 'extra-info-container';
+    extraInfoContainer.appendChild(birthdayEl);
+    extraInfoContainer.appendChild(ageEl);
+    extraInfoContainer.appendChild(zodiacEl);
+    li.appendChild(extraInfoContainer);
+
+    const socialDiv = document.createElement('div');
+    socialDiv.className = 'social-links';
+    const icons = {
+  facebook: `<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="#3b5998" xmlns="http://www.w3.org/2000/svg"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.321v21.357C0 23.406.595 24 1.325 24H12.82V14.708H9.691v-3.62h3.13V8.413c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.237l-1.917.001c-1.504 0-1.796.715-1.796 1.763v2.31h3.588l-.467 3.62h-3.121V24h6.116c.73 0 1.324-.594 1.324-1.322V1.32C24 .592 23.406 0 22.675 0z"/></svg>`,
+  twitter: `<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="#1DA1F2" xmlns="http://www.w3.org/2000/svg"><path d="M23.954 4.569a10.03 10.03 0 01-2.825.775 4.93 4.93 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.916 4.916 0 00-8.38 4.482A13.94 13.94 0 011.67 3.149 4.913 4.913 0 003.195 9.723 4.9 4.9 0 01.964 9.13v.061a4.914 4.914 0 003.946 4.81 4.902 4.902 0 01-2.212.084 4.916 4.916 0 004.587 3.417 9.867 9.867 0 01-6.102 2.105c-.395 0-.779-.023-1.17-.067a13.92 13.92 0 007.548 2.209c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633A9.936 9.936 0 0024 4.59z"/></svg>`,
+  instagram: `<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="#c13584" xmlns="http://www.w3.org/2000/svg"><path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 2A3.75 3.75 0 004 7.75v8.5A3.75 3.75 0 007.75 20h8.5a3.75 3.75 0 003.75-3.75v-8.5A3.75 3.75 0 0016.25 4h-8.5zm7.625 1.5a1.125 1.125 0 110 2.25 1.125 1.125 0 010-2.25zm-4.375 2a4.5 4.5 0 110 9 4.5 4.5 0 010-9zm0 2.25a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"/></svg>`
+};
+
+['facebook', 'twitter', 'instagram'].forEach(platform => {
+  const link = document.createElement('a');
+  link.href = (memberData.social && memberData.social[platform]) || '#';
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer nofollow';
+  link.setAttribute('aria-label', `Visit ${platform} profile`);
+  link.innerHTML = icons[platform];
+  if (!memberData.social || !memberData.social[platform]) {
+    link.style.pointerEvents = 'none';
+    link.style.opacity = '0.4';
+  }
+  socialDiv.appendChild(link);
+});
+    li.appendChild(socialDiv);
+
+    return li;
+  }
+
+  // Render all members from list
+  function renderMembers() {
+    membersListEl.innerHTML = '';
+    initialMembers.forEach(member => {
+      const card = createMemberCard(member);
+      membersListEl.appendChild(card);
+    });
+  }
+
+  // Update upload image preview on form label
+  function updateAddMemberImageLabelPreview(file) {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        addMemberImageLabel.style.backgroundImage = `url('${evt.target.result}')`;
+        addMemberImageLabel.style.backgroundSize = 'cover';
+        addMemberImageLabel.style.color = 'transparent';
+        addMemberImageLabel.textContent = '';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      addMemberImageLabel.style.backgroundImage = `url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cat_silhouette.svg/120px-Cat_silhouette.svg.png')`;
+      addMemberImageLabel.style.backgroundSize = 'contain';
+      addMemberImageLabel.style.color = '#a67425';
+      addMemberImageLabel.textContent = 'Upload Image';
+    }
+  }
+
+  newImageInput.addEventListener('change', () => {
+    if (newImageInput.files && newImageInput.files[0]) {
+      updateAddMemberImageLabelPreview(newImageInput.files[0]);
+    } else {
+      updateAddMemberImageLabelPreview(null);
+    }
+  });
+
+  // Add member handler form submit
+  addMemberForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = newNameInput.value.trim();
+    const details = newDetailsInput.value.trim();
+    const birthday = newBirthdayInput.value.trim();
+    const age = newAgeInput.value.trim();
+    const zodiac = newZodiacInput.value.trim();
+    const facebook = newFacebookInput.value.trim();
+    const twitter = newTwitterInput.value.trim();
+    const instagram = newInstagramInput.value.trim();
+
+    if (!name) {
+      newNameInput.focus();
+      return;
+    }
+
+    const newMember = { name, details, birthday, age, zodiac, social: { facebook, twitter, instagram } };
+
+    if (newImageInput.files && newImageInput.files[0]) {
+      const file = newImageInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        newMember.image = evt.target.result;
+        membersListEl.appendChild(createMemberCard(newMember));
+        addMemberForm.reset();
+        updateAddMemberImageLabelPreview(null);
+        newNameInput.focus();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      newMember.image = '';
+      membersListEl.appendChild(createMemberCard(newMember));
+      addMemberForm.reset();
+      updateAddMemberImageLabelPreview(null);
+      newNameInput.focus();
+    }
+  });
+
+  // Initial label preview reset
+  updateAddMemberImageLabelPreview(null);
+
+  // Initial render
+  renderMembers();
+
+</script>
+
+</body>
+</html>
